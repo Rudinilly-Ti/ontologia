@@ -1,0 +1,1354 @@
+@prefix : <http://example.com#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix gufo: <http://purl.org/nemo/gufo#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://example.com#> .
+
+<http://example.com> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://example.com#hasDificulty
+:hasDificulty rdf:type owl:ObjectProperty ,
+                       owl:FunctionalProperty ;
+              rdfs:domain :Route ;
+              rdfs:range :Difficulty .
+
+
+###  http://example.com#hasDistance
+:hasDistance rdf:type owl:ObjectProperty ,
+                      owl:FunctionalProperty ;
+             rdfs:domain :Route ;
+             rdfs:range :Distance .
+
+
+###  http://example.com#hasElevation
+:hasElevation rdf:type owl:ObjectProperty ,
+                       owl:FunctionalProperty ;
+              rdfs:domain :Route ;
+              rdfs:range :Elevation .
+
+
+###  http://example.com#hasInterestPoints
+:hasInterestPoints rdf:type owl:ObjectProperty ,
+                            owl:FunctionalProperty ;
+                   rdfs:domain :Route ;
+                   rdfs:range :InterestPoints .
+
+
+###  http://example.com#hasRoute
+:hasRoute rdf:type owl:ObjectProperty ;
+          rdfs:subPropertyOf owl:topObjectProperty ;
+          rdf:type owl:FunctionalProperty ;
+          rdfs:domain :Race ;
+          rdfs:range :Route .
+
+
+###  http://example.com#hasSuplementStation
+:hasSuplementStation rdf:type owl:ObjectProperty ,
+                              owl:FunctionalProperty ;
+                     rdfs:domain :Route ;
+                     rdfs:range :SupplementStation .
+
+
+###  http://example.com#hasTypeOfGround
+:hasTypeOfGround rdf:type owl:ObjectProperty ,
+                          owl:FunctionalProperty ;
+                 rdfs:domain :Route ;
+                 rdfs:range :TypeOfGround .
+
+
+###  http://purl.org/nemo/gufo#inheresIn
+gufo:inheresIn rdf:type owl:ObjectProperty .
+
+
+###  http://purl.org/nemo/gufo#manifestedIn
+gufo:manifestedIn rdf:type owl:ObjectProperty .
+
+
+###  http://purl.org/nemo/gufo#mediates
+gufo:mediates rdf:type owl:ObjectProperty .
+
+
+###  http://purl.org/nemo/gufo#participatedIn
+gufo:participatedIn rdf:type owl:ObjectProperty .
+
+
+###  http://purl.org/nemo/gufo#wasCreatedIn
+gufo:wasCreatedIn rdf:type owl:ObjectProperty .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.w3.org/2002/07/owl#topDataProperty
+owl:topDataProperty rdfs:domain :Race .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://example.com#Advanced
+:Advanced rdf:type owl:Class ;
+          rdfs:subClassOf :Difficulty .
+
+
+###  http://example.com#AdvancedRoute
+:AdvancedRoute rdf:type owl:Class ;
+               owl:equivalentClass [ owl:intersectionOf ( :Route
+                                                          [ rdf:type owl:Class ;
+                                                            owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                                            owl:onProperty :hasDificulty ;
+                                                                            owl:allValuesFrom :Advanced
+                                                                          ]
+                                                                          [ rdf:type owl:Restriction ;
+                                                                            owl:onProperty :hasDistance ;
+                                                                            owl:allValuesFrom [ rdf:type owl:Class ;
+                                                                                                owl:unionOf ( :LongRace
+                                                                                                              :UltraMarathon
+                                                                                                            )
+                                                                                              ]
+                                                                          ]
+                                                                        )
+                                                          ]
+                                                        ) ;
+                                     rdf:type owl:Class
+                                   ] .
+
+
+###  http://example.com#AdvancedRunner
+:AdvancedRunner rdf:type owl:Class ;
+                owl:equivalentClass [ owl:intersectionOf ( :Runner
+                                                           [ rdf:type owl:Restriction ;
+                                                             owl:onProperty gufo:participatedIn ;
+                                                             owl:someValuesFrom [ rdf:type owl:Class ;
+                                                                                  owl:unionOf ( :CrossCountryRace
+                                                                                                :RoadRace
+                                                                                              )
+                                                                                ]
+                                                           ]
+                                                         ) ;
+                                      rdf:type owl:Class
+                                    ] .
+
+
+###  http://example.com#Advertisement
+:Advertisement rdf:type owl:Class ;
+               rdfs:subClassOf gufo:Relator ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty gufo:wasCreatedIn ;
+                                 owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                 owl:onClass :Race
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty [ owl:inverseOf gufo:mediates
+                                                ] ;
+                                 owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                 owl:onClass :Organization
+                               ] .
+
+
+###  http://example.com#Asphalt
+:Asphalt rdf:type owl:Class ;
+         rdfs:subClassOf :TypeOfGround .
+
+
+###  http://example.com#AsphaltedRoute
+:AsphaltedRoute rdf:type owl:Class ;
+                owl:equivalentClass [ owl:intersectionOf ( :Route
+                                                           [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :hasElevation ;
+                                                             owl:allValuesFrom :NotHighElevation
+                                                           ]
+                                                           [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :hasTypeOfGround ;
+                                                             owl:allValuesFrom :Asphalt
+                                                           ]
+                                                         ) ;
+                                      rdf:type owl:Class
+                                    ] .
+
+
+###  http://example.com#Award
+:Award rdf:type owl:Class ;
+       rdfs:subClassOf gufo:Quality ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty gufo:inheresIn ;
+                         owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onClass :Race
+                       ] .
+
+
+###  http://example.com#Beginner
+:Beginner rdf:type owl:Class ;
+          rdfs:subClassOf :Difficulty .
+
+
+###  http://example.com#BeginnerRace
+:BeginnerRace rdf:type owl:Class ;
+              rdfs:subClassOf :Distance .
+
+
+###  http://example.com#BeginnerRoute
+:BeginnerRoute rdf:type owl:Class ;
+               owl:equivalentClass [ owl:intersectionOf ( :Route
+                                                          [ rdf:type owl:Class ;
+                                                            owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                                            owl:onProperty :hasDificulty ;
+                                                                            owl:allValuesFrom :Beginner
+                                                                          ]
+                                                                          [ rdf:type owl:Restriction ;
+                                                                            owl:onProperty :hasDistance ;
+                                                                            owl:allValuesFrom [ rdf:type owl:Class ;
+                                                                                                owl:unionOf ( :BeginnerRace
+                                                                                                              :HalfMarathon
+                                                                                                            )
+                                                                                              ]
+                                                                          ]
+                                                                        )
+                                                          ]
+                                                        ) ;
+                                     rdf:type owl:Class
+                                   ] .
+
+
+###  http://example.com#BeginnerRunner
+:BeginnerRunner rdf:type owl:Class ;
+                owl:equivalentClass [ owl:intersectionOf ( :Runner
+                                                           [ rdf:type owl:Restriction ;
+                                                             owl:onProperty gufo:participatedIn ;
+                                                             owl:allValuesFrom [ rdf:type owl:Class ;
+                                                                                 owl:unionOf ( :FunRace
+                                                                                               :StreetRace
+                                                                                               :TrialRace
+                                                                                             )
+                                                                               ]
+                                                           ]
+                                                         ) ;
+                                      rdf:type owl:Class
+                                    ] .
+
+
+###  http://example.com#Capital
+:Capital rdf:type owl:Class ;
+         rdfs:subClassOf :InterestPoints .
+
+
+###  http://example.com#CharitableOrganization
+:CharitableOrganization rdf:type owl:Class ;
+                        rdfs:subClassOf :Organization ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty [ owl:inverseOf gufo:inheresIn
+                                                         ] ;
+                                          owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                          owl:onClass :SupportCause
+                                        ] .
+
+
+###  http://example.com#CrossCountryRace
+:CrossCountryRace rdf:type owl:Class ;
+                  owl:equivalentClass [ owl:intersectionOf ( :Race
+                                                             [ rdf:type owl:Restriction ;
+                                                               owl:onProperty :hasRoute ;
+                                                               owl:allValuesFrom [ owl:intersectionOf ( :GrassRoute
+                                                                                                        :IrregularRoute
+                                                                                                      ) ;
+                                                                                   rdf:type owl:Class
+                                                                                 ]
+                                                             ]
+                                                           ) ;
+                                        rdf:type owl:Class
+                                      ] .
+
+
+###  http://example.com#Difficulty
+:Difficulty rdf:type owl:Class ;
+            rdfs:subClassOf [ rdf:type owl:Restriction ;
+                              owl:onProperty gufo:inheresIn ;
+                              owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                              owl:onClass :Route
+                            ] .
+
+
+###  http://example.com#Distance
+:Distance rdf:type owl:Class ;
+          rdfs:subClassOf [ rdf:type owl:Restriction ;
+                            owl:onProperty gufo:inheresIn ;
+                            owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                            owl:onClass :Route
+                          ] .
+
+
+###  http://example.com#Elevation
+:Elevation rdf:type owl:Class ;
+           rdfs:subClassOf [ rdf:type owl:Restriction ;
+                             owl:onProperty gufo:inheresIn ;
+                             owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                             owl:onClass :Route
+                           ] .
+
+
+###  http://example.com#Employee
+:Employee rdf:type owl:Class ;
+          rdfs:subClassOf gufo:FunctionalComplex .
+
+
+###  http://example.com#FunRace
+:FunRace rdf:type owl:Class ;
+         owl:equivalentClass [ owl:intersectionOf ( :Race
+                                                    [ rdf:type owl:Restriction ;
+                                                      owl:onProperty :hasRoute ;
+                                                      owl:allValuesFrom [ owl:intersectionOf ( :BeginnerRoute
+                                                                                               [ rdf:type owl:Class ;
+                                                                                                 owl:unionOf ( :GrassRoute
+                                                                                                               :MountainRoute
+                                                                                                               :RegularRoute
+                                                                                                               :TrialRoute
+                                                                                                             )
+                                                                                               ]
+                                                                                             ) ;
+                                                                          rdf:type owl:Class
+                                                                        ]
+                                                    ]
+                                                  ) ;
+                               rdf:type owl:Class
+                             ] .
+
+
+###  http://example.com#Grass
+:Grass rdf:type owl:Class ;
+       rdfs:subClassOf :TypeOfGround .
+
+
+###  http://example.com#GrassRoute
+:GrassRoute rdf:type owl:Class ;
+            owl:equivalentClass [ owl:intersectionOf ( :Route
+                                                       [ owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasElevation ;
+                                                                                owl:someValuesFrom [ rdf:type owl:Class ;
+                                                                                                     owl:unionOf ( :HighElevation
+                                                                                                                   :NotHighElevation
+                                                                                                                 )
+                                                                                                   ]
+                                                                              ]
+                                                                              [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasTypeOfGround ;
+                                                                                owl:allValuesFrom :Grass
+                                                                              ]
+                                                                            ) ;
+                                                         rdf:type owl:Class
+                                                       ]
+                                                     ) ;
+                                  rdf:type owl:Class
+                                ] .
+
+
+###  http://example.com#HalfMarathon
+:HalfMarathon rdf:type owl:Class ;
+              rdfs:subClassOf :Distance .
+
+
+###  http://example.com#HighElevation
+:HighElevation rdf:type owl:Class ;
+               rdfs:subClassOf :Elevation ;
+               owl:disjointWith :NotHighElevation .
+
+
+###  http://example.com#Identification
+:Identification rdf:type owl:Class ;
+                rdfs:subClassOf gufo:Quality .
+
+
+###  http://example.com#InterestPoints
+:InterestPoints rdf:type owl:Class ;
+                rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                  owl:onProperty gufo:inheresIn ;
+                                  owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                  owl:onClass :Route
+                                ] .
+
+
+###  http://example.com#Intermediate
+:Intermediate rdf:type owl:Class ;
+              rdfs:subClassOf :Difficulty .
+
+
+###  http://example.com#IntermediateRoute
+:IntermediateRoute rdf:type owl:Class ;
+                   owl:equivalentClass [ owl:intersectionOf ( :Route
+                                                              [ rdf:type owl:Class ;
+                                                                owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasDificulty ;
+                                                                                owl:allValuesFrom :Intermediate
+                                                                              ]
+                                                                              [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasDistance ;
+                                                                                owl:allValuesFrom [ rdf:type owl:Class ;
+                                                                                                    owl:unionOf ( :Marathon
+                                                                                                                  :MediumRace
+                                                                                                                )
+                                                                                                  ]
+                                                                              ]
+                                                                            )
+                                                              ]
+                                                            ) ;
+                                         rdf:type owl:Class
+                                       ] .
+
+
+###  http://example.com#Irregular
+:Irregular rdf:type owl:Class ;
+           rdfs:subClassOf :TypeOfGround .
+
+
+###  http://example.com#IrregularRoute
+:IrregularRoute rdf:type owl:Class ;
+                owl:equivalentClass [ owl:intersectionOf ( :Route
+                                                           [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :hasTypeOfGround ;
+                                                             owl:allValuesFrom :Irregular
+                                                           ]
+                                                         ) ;
+                                      rdf:type owl:Class
+                                    ] .
+
+
+###  http://example.com#KitForRun
+:KitForRun rdf:type owl:Class ;
+           rdfs:subClassOf gufo:Quality .
+
+
+###  http://example.com#LongRace
+:LongRace rdf:type owl:Class ;
+          rdfs:subClassOf :Distance .
+
+
+###  http://example.com#Marathon
+:Marathon rdf:type owl:Class ;
+          rdfs:subClassOf :Distance .
+
+
+###  http://example.com#Medal
+:Medal rdf:type owl:Class ;
+       rdfs:subClassOf :Award .
+
+
+###  http://example.com#MedicalInformation
+:MedicalInformation rdf:type owl:Class ;
+                    rdfs:subClassOf gufo:Quality .
+
+
+###  http://example.com#MediumRace
+:MediumRace rdf:type owl:Class ;
+            rdfs:subClassOf :Distance .
+
+
+###  http://example.com#Money
+:Money rdf:type owl:Class ;
+       rdfs:subClassOf :Award .
+
+
+###  http://example.com#Mountain
+:Mountain rdf:type owl:Class ;
+          rdfs:subClassOf :TypeOfGround .
+
+
+###  http://example.com#MountainRoute
+:MountainRoute rdf:type owl:Class ;
+               owl:equivalentClass [ owl:intersectionOf ( :Route
+                                                          [ rdf:type owl:Restriction ;
+                                                            owl:onProperty :hasElevation ;
+                                                            owl:allValuesFrom :HighElevation
+                                                          ]
+                                                          [ rdf:type owl:Restriction ;
+                                                            owl:onProperty :hasTypeOfGround ;
+                                                            owl:allValuesFrom :Mountain
+                                                          ]
+                                                        ) ;
+                                     rdf:type owl:Class
+                                   ] .
+
+
+###  http://example.com#NotHighElevation
+:NotHighElevation rdf:type owl:Class ;
+                  rdfs:subClassOf :Elevation .
+
+
+###  http://example.com#NotInteresting
+:NotInteresting rdf:type owl:Class ;
+                rdfs:subClassOf :InterestPoints .
+
+
+###  http://example.com#NotPhysicalAward
+:NotPhysicalAward rdf:type owl:Class ;
+                  rdfs:subClassOf :Award .
+
+
+###  http://example.com#Obstacle
+:Obstacle rdf:type owl:Class ;
+          rdfs:subClassOf :TypeOfGround .
+
+
+###  http://example.com#ObstacleRace
+:ObstacleRace rdf:type owl:Class ;
+              owl:equivalentClass [ owl:intersectionOf ( :Race
+                                                         [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasRoute ;
+                                                           owl:allValuesFrom [ owl:intersectionOf ( :IntermediateRoute
+                                                                                                    :ObstacleRoute
+                                                                                                  ) ;
+                                                                               rdf:type owl:Class
+                                                                             ]
+                                                         ]
+                                                       ) ;
+                                    rdf:type owl:Class
+                                  ] .
+
+
+###  http://example.com#ObstacleRoute
+:ObstacleRoute rdf:type owl:Class ;
+               owl:equivalentClass [ owl:intersectionOf ( :Route
+                                                          [ rdf:type owl:Restriction ;
+                                                            owl:onProperty :hasElevation ;
+                                                            owl:allValuesFrom :HighElevation
+                                                          ]
+                                                          [ rdf:type owl:Restriction ;
+                                                            owl:onProperty :hasTypeOfGround ;
+                                                            owl:allValuesFrom :Obstacle
+                                                          ]
+                                                        ) ;
+                                     rdf:type owl:Class
+                                   ] .
+
+
+###  http://example.com#Organization
+:Organization rdf:type owl:Class ;
+              rdfs:subClassOf gufo:FunctionalComplex ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty gufo:mediates ;
+                                owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass :RegistrationCheck
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty gufo:wasCreatedIn ;
+                                owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass :Race
+                              ] .
+
+
+###  http://example.com#Permanent
+:Permanent rdf:type owl:Class ;
+           rdfs:subClassOf :Employee .
+
+
+###  http://example.com#PersonalInformatation
+:PersonalInformatation rdf:type owl:Class ;
+                       rdfs:subClassOf gufo:Quality .
+
+
+###  http://example.com#PhysicalAward
+:PhysicalAward rdf:type owl:Class ;
+               rdfs:subClassOf :Award .
+
+
+###  http://example.com#PrivateOrganization
+:PrivateOrganization rdf:type owl:Class ;
+                     rdfs:subClassOf :Organization .
+
+
+###  http://example.com#ProfessionalRunner
+:ProfessionalRunner rdf:type owl:Class ;
+                    owl:equivalentClass [ owl:intersectionOf ( :Runner
+                                                               [ rdf:type owl:Restriction ;
+                                                                 owl:onProperty gufo:participatedIn ;
+                                                                 owl:someValuesFrom [ rdf:type owl:Class ;
+                                                                                      owl:unionOf ( :ObstacleRace
+                                                                                                    :SprintRace
+                                                                                                  )
+                                                                                    ]
+                                                               ]
+                                                             ) ;
+                                          rdf:type owl:Class
+                                        ] .
+
+
+###  http://example.com#PublicOraganization
+:PublicOraganization rdf:type owl:Class ;
+                     rdfs:subClassOf :Organization .
+
+
+###  http://example.com#Race
+:Race rdf:type owl:Class ;
+      rdfs:subClassOf gufo:Event ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty [ owl:inverseOf gufo:manifestedIn
+                                       ] ;
+                        owl:someValuesFrom :Registration
+                      ] ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty [ owl:inverseOf gufo:participatedIn
+                                       ] ;
+                        owl:someValuesFrom :Runner
+                      ] ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty [ owl:inverseOf gufo:inheresIn
+                                       ] ;
+                        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                        owl:onClass :Award
+                      ] ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty [ owl:inverseOf gufo:inheresIn
+                                       ] ;
+                        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                        owl:onClass :Route
+                      ] ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty [ owl:inverseOf gufo:inheresIn
+                                       ] ;
+                        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                        owl:onClass :Rules
+                      ] ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty [ owl:inverseOf gufo:wasCreatedIn
+                                       ] ;
+                        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                        owl:onClass :Advertisement
+                      ] ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty [ owl:inverseOf gufo:wasCreatedIn
+                                       ] ;
+                        owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                        owl:onClass :Organization
+                      ] .
+
+
+###  http://example.com#Registration
+:Registration rdf:type owl:Class ;
+              rdfs:subClassOf gufo:Relator ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty gufo:mediates ;
+                                owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass :RegistrationCheck
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty gufo:mediates ;
+                                owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass :Runner
+                              ] .
+
+
+###  http://example.com#RegistrationCheck
+:RegistrationCheck rdf:type owl:Class ;
+                   rdfs:subClassOf gufo:Relator .
+
+
+###  http://example.com#Regular
+:Regular rdf:type owl:Class ;
+         rdfs:subClassOf :TypeOfGround .
+
+
+###  http://example.com#RegularRoute
+:RegularRoute rdf:type owl:Class ;
+              owl:equivalentClass [ owl:intersectionOf ( :Route
+                                                         [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasTypeOfGround ;
+                                                           owl:allValuesFrom :Regular
+                                                         ]
+                                                       ) ;
+                                    rdf:type owl:Class
+                                  ] .
+
+
+###  http://example.com#RoadRace
+:RoadRace rdf:type owl:Class ;
+          owl:equivalentClass [ owl:intersectionOf ( :Race
+                                                     [ rdf:type owl:Restriction ;
+                                                       owl:onProperty :hasRoute ;
+                                                       owl:allValuesFrom :AsphaltedRoute
+                                                     ]
+                                                   ) ;
+                                rdf:type owl:Class
+                              ] .
+
+
+###  http://example.com#Route
+:Route rdf:type owl:Class ;
+       rdfs:subClassOf gufo:Quality ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty gufo:inheresIn ;
+                         owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onClass :Race
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty [ owl:inverseOf gufo:inheresIn
+                                        ] ;
+                         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onClass :Difficulty
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty [ owl:inverseOf gufo:inheresIn
+                                        ] ;
+                         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onClass :Distance
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty [ owl:inverseOf gufo:inheresIn
+                                        ] ;
+                         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onClass :Elevation
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty [ owl:inverseOf gufo:inheresIn
+                                        ] ;
+                         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onClass :InterestPoints
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty [ owl:inverseOf gufo:inheresIn
+                                        ] ;
+                         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onClass :SupplementStation
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty [ owl:inverseOf gufo:inheresIn
+                                        ] ;
+                         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onClass :TypeOfGround
+                       ] .
+
+
+###  http://example.com#Rules
+:Rules rdf:type owl:Class ;
+       rdfs:subClassOf gufo:Quality ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty gufo:inheresIn ;
+                         owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onClass :Race
+                       ] .
+
+
+###  http://example.com#Runner
+:Runner rdf:type owl:Class ;
+        rdfs:subClassOf gufo:FunctionalComplex .
+
+
+###  http://example.com#SprintRace
+:SprintRace rdf:type owl:Class ;
+            owl:equivalentClass [ owl:intersectionOf ( :Race
+                                                       [ rdf:type owl:Restriction ;
+                                                         owl:onProperty :hasRoute ;
+                                                         owl:allValuesFrom :AdvancedRoute
+                                                       ]
+                                                     ) ;
+                                  rdf:type owl:Class
+                                ] .
+
+
+###  http://example.com#StreetRace
+:StreetRace rdf:type owl:Class ;
+            owl:equivalentClass [ owl:intersectionOf ( :Race
+                                                       [ rdf:type owl:Restriction ;
+                                                         owl:onProperty :hasRoute ;
+                                                         owl:allValuesFrom [ owl:intersectionOf ( :AsphaltedRoute
+                                                                                                  [ rdf:type owl:Class ;
+                                                                                                    owl:unionOf ( :BeginnerRoute
+                                                                                                                  :IntermediateRoute
+                                                                                                                )
+                                                                                                  ]
+                                                                                                ) ;
+                                                                             rdf:type owl:Class
+                                                                           ]
+                                                       ]
+                                                     ) ;
+                                  rdf:type owl:Class
+                                ] .
+
+
+###  http://example.com#SupplementStation
+:SupplementStation rdf:type owl:Class ;
+                   rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                     owl:onProperty gufo:inheresIn ;
+                                     owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                     owl:onClass :Route
+                                   ] .
+
+
+###  http://example.com#SupportCause
+:SupportCause rdf:type owl:Class ;
+              rdfs:subClassOf gufo:IntrinsicMode ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty gufo:inheresIn ;
+                                owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass :CharitableOrganization
+                              ] .
+
+
+###  http://example.com#Trial
+:Trial rdf:type owl:Class ;
+       rdfs:subClassOf :TypeOfGround .
+
+
+###  http://example.com#TrialRace
+:TrialRace rdf:type owl:Class ;
+           owl:equivalentClass [ owl:intersectionOf ( :Race
+                                                      [ rdf:type owl:Restriction ;
+                                                        owl:onProperty :hasRoute ;
+                                                        owl:someValuesFrom [ owl:intersectionOf ( :BeginnerRoute
+                                                                                                  [ rdf:type owl:Class ;
+                                                                                                    owl:unionOf ( :MountainRoute
+                                                                                                                  :TrialRoute
+                                                                                                                )
+                                                                                                  ]
+                                                                                                ) ;
+                                                                             rdf:type owl:Class
+                                                                           ]
+                                                      ]
+                                                    ) ;
+                                 rdf:type owl:Class
+                               ] ;
+           rdfs:label "TrailRace"@en .
+
+
+###  http://example.com#TrialRoute
+:TrialRoute rdf:type owl:Class ;
+            owl:equivalentClass [ owl:intersectionOf ( :Route
+                                                       [ rdf:type owl:Restriction ;
+                                                         owl:onProperty :hasElevation ;
+                                                         owl:someValuesFrom [ rdf:type owl:Class ;
+                                                                              owl:unionOf ( :HighElevation
+                                                                                            :NotHighElevation
+                                                                                          )
+                                                                            ]
+                                                       ]
+                                                       [ rdf:type owl:Restriction ;
+                                                         owl:onProperty :hasTypeOfGround ;
+                                                         owl:allValuesFrom :Trial
+                                                       ]
+                                                     ) ;
+                                  rdf:type owl:Class
+                                ] .
+
+
+###  http://example.com#Trophy
+:Trophy rdf:type owl:Class ;
+        rdfs:subClassOf :Award .
+
+
+###  http://example.com#Turistic
+:Turistic rdf:type owl:Class ;
+          rdfs:subClassOf :InterestPoints .
+
+
+###  http://example.com#TypeOfGround
+:TypeOfGround rdf:type owl:Class ;
+              rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                owl:onProperty gufo:inheresIn ;
+                                owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                owl:onClass :Route
+                              ] .
+
+
+###  http://example.com#UltraMarathon
+:UltraMarathon rdf:type owl:Class ;
+               rdfs:subClassOf :Distance .
+
+
+###  http://example.com#Volunteer
+:Volunteer rdf:type owl:Class ;
+           rdfs:subClassOf :Employee .
+
+
+###  http://purl.org/nemo/gufo#Category
+gufo:Category rdf:type owl:Class .
+
+
+###  http://purl.org/nemo/gufo#Event
+gufo:Event rdf:type owl:Class .
+
+
+###  http://purl.org/nemo/gufo#EventType
+gufo:EventType rdf:type owl:Class .
+
+
+###  http://purl.org/nemo/gufo#FunctionalComplex
+gufo:FunctionalComplex rdf:type owl:Class .
+
+
+###  http://purl.org/nemo/gufo#IntrinsicMode
+gufo:IntrinsicMode rdf:type owl:Class .
+
+
+###  http://purl.org/nemo/gufo#Kind
+gufo:Kind rdf:type owl:Class .
+
+
+###  http://purl.org/nemo/gufo#Quality
+gufo:Quality rdf:type owl:Class .
+
+
+###  http://purl.org/nemo/gufo#Relator
+gufo:Relator rdf:type owl:Class .
+
+
+###  http://purl.org/nemo/gufo#SubKind
+gufo:SubKind rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://example.com#AdvancedRunner
+:AdvancedRunner rdf:type owl:NamedIndividual ,
+                         gufo:SubKind .
+
+
+###  http://example.com#Advertisement
+:Advertisement rdf:type owl:NamedIndividual ,
+                        gufo:Kind .
+
+
+###  http://example.com#AsphaltedRoute
+:AsphaltedRoute rdf:type owl:NamedIndividual ,
+                         gufo:SubKind .
+
+
+###  http://example.com#Award
+:Award rdf:type owl:NamedIndividual ,
+                gufo:Kind .
+
+
+###  http://example.com#BeginnerRunner
+:BeginnerRunner rdf:type owl:NamedIndividual ,
+                         gufo:SubKind .
+
+
+###  http://example.com#CharitableOrganization
+:CharitableOrganization rdf:type owl:NamedIndividual ,
+                                 gufo:Kind .
+
+
+###  http://example.com#Corrida1
+:Corrida1 rdf:type owl:NamedIndividual ,
+                   [ owl:intersectionOf ( :Race
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasRoute ;
+                                            owl:someValuesFrom :AsphaltedRoute
+                                          ]
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasRoute ;
+                                            owl:someValuesFrom :BeginnerRoute
+                                          ]
+                                        ) ;
+                     rdf:type owl:Class
+                   ] .
+
+
+###  http://example.com#CrossCountryRace
+:CrossCountryRace rdf:type owl:NamedIndividual ,
+                           gufo:EventType .
+
+
+###  http://example.com#Employee
+:Employee rdf:type owl:NamedIndividual ,
+                   gufo:Kind .
+
+
+###  http://example.com#FunRace
+:FunRace rdf:type owl:NamedIndividual ,
+                  gufo:EventType .
+
+
+###  http://example.com#FunRace1
+:FunRace1 rdf:type owl:NamedIndividual ,
+                   [ owl:intersectionOf ( :Race
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasRoute ;
+                                            owl:allValuesFrom [ owl:intersectionOf ( :BeginnerRoute
+                                                                                     :MountainRoute
+                                                                                   ) ;
+                                                                rdf:type owl:Class
+                                                              ]
+                                          ]
+                                        ) ;
+                     rdf:type owl:Class
+                   ] .
+
+
+###  http://example.com#Identification
+:Identification rdf:type owl:NamedIndividual ,
+                         gufo:Kind .
+
+
+###  http://example.com#KitForRun
+:KitForRun rdf:type owl:NamedIndividual ,
+                    gufo:Kind .
+
+
+###  http://example.com#MedicalInformation
+:MedicalInformation rdf:type owl:NamedIndividual ,
+                             gufo:Kind .
+
+
+###  http://example.com#ObstacleRace
+:ObstacleRace rdf:type owl:NamedIndividual ,
+                       gufo:EventType .
+
+
+###  http://example.com#Organization
+:Organization rdf:type owl:NamedIndividual ,
+                       gufo:Category .
+
+
+###  http://example.com#Permanent
+:Permanent rdf:type owl:NamedIndividual ,
+                    gufo:SubKind .
+
+
+###  http://example.com#PersonalInformatation
+:PersonalInformatation rdf:type owl:NamedIndividual ,
+                                gufo:Kind .
+
+
+###  http://example.com#Podium
+:Podium rdf:type owl:NamedIndividual ,
+                 gufo:Kind .
+
+
+###  http://example.com#PrivateOrganization
+:PrivateOrganization rdf:type owl:NamedIndividual ,
+                              gufo:Kind .
+
+
+###  http://example.com#ProfessionalRunner
+:ProfessionalRunner rdf:type owl:NamedIndividual ,
+                             gufo:SubKind .
+
+
+###  http://example.com#PublicOraganization
+:PublicOraganization rdf:type owl:NamedIndividual ,
+                              gufo:Kind .
+
+
+###  http://example.com#Race
+:Race rdf:type owl:NamedIndividual ,
+               gufo:EventType .
+
+
+###  http://example.com#Registration
+:Registration rdf:type owl:NamedIndividual ,
+                       gufo:Kind .
+
+
+###  http://example.com#RegistrationCheck
+:RegistrationCheck rdf:type owl:NamedIndividual ,
+                            gufo:Kind .
+
+
+###  http://example.com#RoadRace
+:RoadRace rdf:type owl:NamedIndividual ,
+                   gufo:EventType .
+
+
+###  http://example.com#Rota1
+:Rota1 rdf:type owl:NamedIndividual ,
+                [ owl:intersectionOf ( :Route
+                                       [ owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                owl:onProperty :hasElevation ;
+                                                                owl:allValuesFrom :NotHighElevation
+                                                              ]
+                                                              [ rdf:type owl:Restriction ;
+                                                                owl:onProperty :hasTypeOfGround ;
+                                                                owl:allValuesFrom :Asphalt
+                                                              ]
+                                                            ) ;
+                                         rdf:type owl:Class
+                                       ]
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDificulty ;
+                                         owl:allValuesFrom :Beginner
+                                       ]
+                                     ) ;
+                  rdf:type owl:Class
+                ] .
+
+
+###  http://example.com#Route
+:Route rdf:type owl:NamedIndividual ,
+                gufo:Kind .
+
+
+###  http://example.com#Route3
+:Route3 rdf:type owl:NamedIndividual ,
+                 [ owl:intersectionOf ( :Route
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasElevation ;
+                                          owl:allValuesFrom :HighElevation
+                                        ]
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasTypeOfGround ;
+                                          owl:allValuesFrom :Mountain
+                                        ]
+                                      ) ;
+                   rdf:type owl:Class
+                 ] .
+
+
+###  http://example.com#Rules
+:Rules rdf:type owl:NamedIndividual ,
+                gufo:Kind .
+
+
+###  http://example.com#Runner
+:Runner rdf:type owl:NamedIndividual ,
+                 gufo:Kind .
+
+
+###  http://example.com#Runner1
+:Runner1 rdf:type owl:NamedIndividual ,
+                  [ owl:intersectionOf ( :Runner
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty gufo:participatedIn ;
+                                           owl:someValuesFrom :ObstacleRace
+                                         ]
+                                       ) ;
+                    rdf:type owl:Class
+                  ] .
+
+
+###  http://example.com#Runner2
+:Runner2 rdf:type owl:NamedIndividual .
+
+
+###  http://example.com#SprintRace
+:SprintRace rdf:type owl:NamedIndividual ,
+                     gufo:EventType .
+
+
+###  http://example.com#StreetRace
+:StreetRace rdf:type owl:NamedIndividual ,
+                     gufo:EventType .
+
+
+###  http://example.com#SupportCause
+:SupportCause rdf:type owl:NamedIndividual ,
+                       gufo:Kind .
+
+
+###  http://example.com#TrailRace
+:TrailRace rdf:type owl:NamedIndividual ,
+                    gufo:EventType .
+
+
+###  http://example.com#TuristicRace
+:TuristicRace rdf:type owl:NamedIndividual ,
+                       [ owl:intersectionOf ( :Race
+                                              [ rdf:type owl:Restriction ;
+                                                owl:onProperty :hasRoute ;
+                                                owl:allValuesFrom [ owl:intersectionOf ( :BeginnerRoute
+                                                                                         :TrialRoute
+                                                                                       ) ;
+                                                                    rdf:type owl:Class
+                                                                  ]
+                                              ]
+                                            ) ;
+                         rdf:type owl:Class
+                       ] .
+
+
+###  http://example.com#Volunteer
+:Volunteer rdf:type owl:NamedIndividual ,
+                    gufo:SubKind .
+
+
+#################################################################
+#    Annotations
+#################################################################
+
+:AdvancedRunner rdfs:label "AdvancedRunner"@en .
+
+
+:Advertisement rdfs:label "Advertisement"@en .
+
+
+:AsphaltedRoute rdfs:label "AsphaltedRoute"@en .
+
+
+:Award rdfs:label "Award"@en .
+
+
+:BeginnerRunner rdfs:label "BeginnerRunner"@en .
+
+
+:CharitableOrganization rdfs:label "CharitableOrganization"@en .
+
+
+:CrossCountryRace rdfs:label "CrossCountryRace"@en .
+
+
+:Employee rdfs:label "Employee"@en .
+
+
+:FunRace rdfs:label "FunRace"@en .
+
+
+:Identification rdfs:label "Identification"@en .
+
+
+:KitForRun rdfs:label "KitForRun"@en .
+
+
+:MedicalInformation rdfs:label "MedicalInformation"@en .
+
+
+:ObstacleRace rdfs:label "ObstacleRace"@en .
+
+
+:Organization rdfs:label "Organization"@en .
+
+
+:Permanent rdfs:label "Permanent"@en .
+
+
+:PersonalInformatation rdfs:label "PersonalInformatation"@en .
+
+
+:PrivateOrganization rdfs:label "PrivateOrganization"@en .
+
+
+:ProfessionalRunner rdfs:label "ProfessionalRunner"@en .
+
+
+:PublicOraganization rdfs:label "PublicOraganization"@en .
+
+
+:Race rdfs:label "Race"@en .
+
+
+:Registration rdfs:label "Registration"@en .
+
+
+:RegistrationCheck rdfs:label "RegistrationCheck"@en .
+
+
+:RoadRace rdfs:label "RoadRace"@en .
+
+
+:Route rdfs:label "Route"@en .
+
+
+:Rules rdfs:label "Rules"@en .
+
+
+:Runner rdfs:label "Runner"@en .
+
+
+:SprintRace rdfs:label "SprintRace"@en .
+
+
+:StreetRace rdfs:label "StreetRace"@en .
+
+
+:SupportCause rdfs:label "SupportCause"@en .
+
+
+:Volunteer rdfs:label "Volunteer"@en .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :Advanced
+                :Beginner
+                :Intermediate
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :AdvancedRoute
+                :BeginnerRoute
+                :IntermediateRoute
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :AdvancedRunner
+                :BeginnerRunner
+                :ProfessionalRunner
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :Asphalt
+                :Grass
+                :Irregular
+                :Mountain
+                :Obstacle
+                :Regular
+                :Trial
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :BeginnerRace
+                :HalfMarathon
+                :LongRace
+                :Marathon
+                :MediumRace
+                :UltraMarathon
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :Capital
+                :NotInteresting
+                :Turistic
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :Difficulty
+                :Distance
+                :Elevation
+                :InterestPoints
+                :SupplementStation
+                :TypeOfGround
+                gufo:Category
+                gufo:Event
+                gufo:EventType
+                gufo:FunctionalComplex
+                gufo:IntrinsicMode
+                gufo:Kind
+                gufo:Quality
+                gufo:Relator
+                gufo:SubKind
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :Medal
+                :Money
+                :NotPhysicalAward
+                :PhysicalAward
+                :Trophy
+              )
+] .
+
+
+###  Generated by the OWL API (version 4.5.25.2023-02-15T19:15:49Z) https://github.com/owlcs/owlapi
